@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 
+import ru.mipt.bit.platformer.ObstacleManager;
 import ru.mipt.bit.platformer.interfaces.RenderContext;
 import ru.mipt.bit.platformer.interfaces.Renderable;
-import ru.mipt.bit.platformer.objects.obstacles.ObstacleManager;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static com.badlogic.gdx.Input.Keys.*;
@@ -51,20 +51,24 @@ public class Player implements Renderable {
     private static final float MOVEMENT_SPEED = 0.4f;
 
     private TileMovement tileMovement;
+    private Texture texture;
     private TextureRegion graphics;
     private Rectangle rectangle;
 
-    private GridPoint2 pos;
+    private GridPoint2 currPos, nextPos;
     private float rotation;
-    private float speed;
+    private float progress;
 
-    Player(TiledMapTileLayer groundLayer, Texture texture, GridPoint2 pos) {
+    public Player(TiledMapTileLayer groundLayer, GridPoint2 pos) {
         this.tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
-        this.graphics = new TextureRegion(texture);
+        this.texture = new Texture("images/tank_blue.png");
+        this.graphics = new TextureRegion(this.texture);
         this.rectangle = createBoundingRectangle(this.graphics);
 
-        this.pos = pos;
-        this.speed = 1f;
+        this.currPos = new GridPoint2(pos);
+        this.nextPos = new GridPoint2(pos);
+        this.rotation = 0f;
+        this.progress = 1f;
     }
 
     private static MoveContext getMoveContext() {
@@ -83,31 +87,30 @@ public class Player implements Renderable {
         return null;
     }
 
-    private boolean isMoving() {
-        return isEqual(this.speed, 1f);
+    private boolean finishedMoving() {
+        return isEqual(this.progress, 1f);
     }
 
     private void updatePos(float deltaTime) {
         MoveContext moveCtx = getMoveContext();
-        if (moveCtx == null)
-            return;
-
-        GridPoint2 newPos = new GridPoint2(this.pos).add(moveCtx.dx(), moveCtx.dy());
-        if (this.isMoving()) {
-            if (ObstacleManager.getInstance().contains(newPos)) {
-                newPos.set(this.pos);
-                this.speed = 0f;
+        if (moveCtx != null) {
+            if (this.finishedMoving()) {
+                GridPoint2 newPos = new GridPoint2(this.currPos).add(moveCtx.dx(), moveCtx.dy());
+                if (!ObstacleManager.getInstance().contains(newPos)) {
+                    this.nextPos.add(moveCtx.dx(), moveCtx.dy());
+                    this.progress = 0f;
+                }
+                this.rotation = moveCtx.rotation();
             }
-            this.rotation = moveCtx.rotation();
         }
 
         // calculate interpolated player screen coordinates
-        this.tileMovement.moveRectangleBetweenTileCenters(this.rectangle, this.pos, newPos, this.speed);
+        this.tileMovement.moveRectangleBetweenTileCenters(this.rectangle, this.currPos, this.nextPos, this.progress);
 
-        this.speed = continueProgress(this.speed, deltaTime, MOVEMENT_SPEED);
-        if (this.isMoving()) {
+        this.progress = continueProgress(this.progress, deltaTime, MOVEMENT_SPEED);
+        if (this.finishedMoving()) {
             // record that the player has reached his/her destination
-            this.pos.set(newPos);
+            this.currPos.set(this.nextPos);
         }
     }
 
@@ -115,5 +118,10 @@ public class Player implements Renderable {
     public void render(RenderContext context) {
         this.updatePos(context.deltaTime);
         drawTextureRegionUnscaled(context.batch, this.graphics, this.rectangle, this.rotation);
+    }
+
+    @Override
+    public void dispose() {
+        this.texture.dispose();
     }
 }

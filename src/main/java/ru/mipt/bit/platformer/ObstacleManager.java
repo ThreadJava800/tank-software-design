@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.objects.obstacles;
+package ru.mipt.bit.platformer;
 
 import java.util.ArrayList;
 

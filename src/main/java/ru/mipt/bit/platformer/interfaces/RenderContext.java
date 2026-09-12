@@ -5,4 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public class RenderContext {
     public Batch batch;
     public float deltaTime;
+
+    public RenderContext(Batch batch, float deltaTime) {
+        this.batch = batch;
+        this.deltaTime = deltaTime;
+    }
 }
