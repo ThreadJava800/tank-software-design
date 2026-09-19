@@ -8,20 +8,43 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import ru.mipt.bit.platformer.interfaces.RenderContext;
+import com.badlogic.gdx.math.GridPoint2;
 
+import ru.mipt.bit.platformer.manager.InputManager;
+import ru.mipt.bit.platformer.model.Direction;
+import ru.mipt.bit.platformer.model.Game;
+import ru.mipt.bit.platformer.model.entity.Player;
+import ru.mipt.bit.platformer.model.entity.Tree;
+import ru.mipt.bit.platformer.view.Scene;
+import ru.mipt.bit.platformer.view.sprite.PlayerSprite;
+import ru.mipt.bit.platformer.view.sprite.TreeSprite;
+
+import static com.badlogic.gdx.Input.Keys.A;
+import static com.badlogic.gdx.Input.Keys.D;
+import static com.badlogic.gdx.Input.Keys.DOWN;
+import static com.badlogic.gdx.Input.Keys.LEFT;
+import static com.badlogic.gdx.Input.Keys.RIGHT;
+import static com.badlogic.gdx.Input.Keys.S;
+import static com.badlogic.gdx.Input.Keys.UP;
+import static com.badlogic.gdx.Input.Keys.W;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
 public class GameDesktopLauncher implements ApplicationListener {
+
+    private static final GridPoint2 PLAYER_POS = new GridPoint2(1, 1);
+    private static final GridPoint2 TREE_POS = new GridPoint2(1, 3);
 
     private Batch batch;
 
     private TiledMap level;
     private MapRenderer levelRenderer;
 
+    private Game game;
     private Scene scene;
+    private InputManager inputManager;
 
     @Override
     public void create() {
@@ -30,9 +53,39 @@ public class GameDesktopLauncher implements ApplicationListener {
         // load level tiles
         level = new TmxMapLoader().load("level.tmx");
         levelRenderer = createSingleLayerMapRenderer(level, batch);
+        TiledMapTileLayer groundLayer = getSingleLayer(level);
 
         scene = new Scene();
-        scene.build(level);
+        game = new Game();
+
+        addPlayer(PLAYER_POS, groundLayer);
+        addTree(TREE_POS, groundLayer);
+
+        initInputManager();
+    }
+
+    private void addPlayer(GridPoint2 position, TiledMapTileLayer groundLayer) {
+        Player player = new Player(position);
+        scene.add(new PlayerSprite(player, groundLayer));
+        game.addPlayer(player);
+    }
+
+    private void addTree(GridPoint2 position, TiledMapTileLayer groundLayer) {
+        Tree tree = new Tree(position);
+        scene.add(new TreeSprite(tree, groundLayer));
+        game.addObstacle(tree);
+    }
+
+    private void initInputManager() {
+        inputManager = new InputManager(Gdx.input::isKeyPressed);
+        inputManager.register(UP, () -> game.movePlayer(Direction.UP));
+        inputManager.register(W, () -> game.movePlayer(Direction.UP));
+        inputManager.register(LEFT, () -> game.movePlayer(Direction.LEFT));
+        inputManager.register(A, () -> game.movePlayer(Direction.LEFT));
+        inputManager.register(DOWN, () -> game.movePlayer(Direction.DOWN));
+        inputManager.register(S, () -> game.movePlayer(Direction.DOWN));
+        inputManager.register(RIGHT, () -> game.movePlayer(Direction.RIGHT));
+        inputManager.register(D, () -> game.movePlayer(Direction.RIGHT));
     }
 
     @Override
@@ -41,14 +94,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
-        // get time passed since the last render
-        float deltaTime = Gdx.graphics.getDeltaTime();
+        inputManager.handleInput();
+        game.update(Gdx.graphics.getDeltaTime());
 
         // render each tile of the level
         levelRenderer.render();
 
-        RenderContext ctx = new RenderContext(batch, deltaTime);
-        scene.render(ctx);
+        scene.render(batch);
     }
 
     @Override
