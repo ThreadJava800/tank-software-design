@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import ru.mipt.bit.platformer.model.entity.Player;
 
-public class Game {
+public class Game implements CollisionChecker {
 
     private Player player;
     private final List<Obstacle> obstacles = new ArrayList<>();
@@ -20,6 +20,7 @@ public class Game {
         this.obstacles.add(obstacle);
     }
 
+    @Override
     public boolean hasCollision(GridPoint2 point) {
         for (Obstacle obstacle : this.obstacles) {
             if (obstacle.hasCollision(point)) {

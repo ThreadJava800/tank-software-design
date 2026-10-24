@@ -2,8 +2,8 @@ package ru.mipt.bit.platformer.model.entity;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+import ru.mipt.bit.platformer.model.CollisionChecker;
 import ru.mipt.bit.platformer.model.Direction;
-import ru.mipt.bit.platformer.model.Game;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
@@ -27,10 +27,10 @@ public class Player {
         return isEqual(this.progress, 1f);
     }
 
-    public void move(Direction direction, Game game) {
+    public void move(Direction direction, CollisionChecker collisionChecker) {
         if (this.finishedMoving()) {
             GridPoint2 newPos = new GridPoint2(this.currPos).add(direction.dx(), direction.dy());
-            if (!game.hasCollision(newPos)) {
+            if (!collisionChecker.hasCollision(newPos)) {
                 this.nextPos.add(direction.dx(), direction.dy());
                 this.progress = 0f;
             }
