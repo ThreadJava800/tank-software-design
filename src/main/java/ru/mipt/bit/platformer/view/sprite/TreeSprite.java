@@ -19,8 +19,8 @@ public class TreeSprite implements Renderable {
     private final TextureRegion graphics;
     private final Rectangle rectangle;
 
-    public TreeSprite(Tree tree, TiledMapTileLayer groundLayer) {
-        this.texture = new Texture("images/greenTree.png");
+    public TreeSprite(Tree tree, TiledMapTileLayer groundLayer, String texturePath) {
+        this.texture = new Texture(texturePath);
         this.graphics = new TextureRegion(this.texture);
         this.rectangle = createBoundingRectangle(this.graphics);
         moveRectangleAtTileCenter(groundLayer, this.rectangle, tree.getPos());

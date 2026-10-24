@@ -36,6 +36,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private static final GridPoint2 PLAYER_POS = new GridPoint2(1, 1);
     private static final GridPoint2 TREE_POS = new GridPoint2(1, 3);
+    private static final String TANK_TEXTURE = "images/tank_blue.png";
+    private static final String TREE_TEXTURE = "images/greenTree.png";
 
     private Batch batch;
 
@@ -66,13 +68,13 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private void addPlayer(GridPoint2 position, TiledMapTileLayer groundLayer) {
         Player player = new Player(position);
-        scene.add(new PlayerSprite(player, groundLayer));
+        scene.add(new PlayerSprite(player, groundLayer, TANK_TEXTURE));
         game.addPlayer(player);
     }
 
     private void addTree(GridPoint2 position, TiledMapTileLayer groundLayer) {
         Tree tree = new Tree(position);
-        scene.add(new TreeSprite(tree, groundLayer));
+        scene.add(new TreeSprite(tree, groundLayer, TREE_TEXTURE));
         game.addObstacle(tree);
     }
 

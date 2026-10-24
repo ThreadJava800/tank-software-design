@@ -22,10 +22,10 @@ public class PlayerSprite implements Renderable {
     private final TextureRegion graphics;
     private final Rectangle rectangle;
 
-    public PlayerSprite(Player player, TiledMapTileLayer groundLayer) {
+    public PlayerSprite(Player player, TiledMapTileLayer groundLayer, String texturePath) {
         this.player = player;
         this.tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
-        this.texture = new Texture("images/tank_blue.png");
+        this.texture = new Texture(texturePath);
         this.graphics = new TextureRegion(this.texture);
         this.rectangle = createBoundingRectangle(this.graphics);
     }
