@@ -3,6 +3,8 @@ package ru.mipt.bit.platformer.manager;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import ru.mipt.bit.platformer.command.Runnable;
+
 public class InputManager {
 
     private final KeyChecker keyChecker;

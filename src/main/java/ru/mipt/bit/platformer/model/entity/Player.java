@@ -30,7 +30,7 @@ public class Player {
     public void move(Direction direction, CollisionChecker collisionChecker) {
         if (this.finishedMoving()) {
             GridPoint2 newPos = new GridPoint2(this.currPos).add(direction.dx(), direction.dy());
-            if (!collisionChecker.hasCollision(newPos)) {
+            if (!collisionChecker.hasCollision(newPos, this)) {
                 this.nextPos.add(direction.dx(), direction.dy());
                 this.progress = 0f;
             }
@@ -43,6 +43,10 @@ public class Player {
         if (this.finishedMoving()) {
             this.currPos.set(this.nextPos);
         }
+    }
+
+    public boolean isOccupying(GridPoint2 point) {
+        return this.currPos.equals(point) || this.nextPos.equals(point);
     }
 
     public GridPoint2 getCurrPos() {

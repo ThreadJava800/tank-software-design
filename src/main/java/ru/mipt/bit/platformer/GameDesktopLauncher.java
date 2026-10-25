@@ -1,5 +1,8 @@
 package ru.mipt.bit.platformer;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
@@ -12,10 +15,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 
+import ru.mipt.bit.platformer.ai.RandomMovementStrategy;
+import ru.mipt.bit.platformer.command.MoveCommand;
 import ru.mipt.bit.platformer.level.FileLevelLoader;
 import ru.mipt.bit.platformer.level.LevelLayout;
 import ru.mipt.bit.platformer.level.LevelLoader;
-import ru.mipt.bit.platformer.level.RandomLevelLoader;
+import ru.mipt.bit.platformer.level.LayoutGeneration;
 import ru.mipt.bit.platformer.manager.InputManager;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Game;
@@ -40,6 +45,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private static final String TANK_TEXTURE = "images/tank_blue.png";
     private static final String TREE_TEXTURE = "images/greenTree.png";
+    private static final int AI_PLAYER_COUNT = 3;
 
     private Batch batch;
 
@@ -60,14 +66,25 @@ public class GameDesktopLauncher implements ApplicationListener {
         TiledMapTileLayer groundLayer = getSingleLayer(level);
 
         scene = new Scene();
-        game = new Game();
+        game = new Game(groundLayer.getWidth(), groundLayer.getHeight());
 
         // LevelLoader loader = new RandomLevelLoader(groundLayer.getWidth(), groundLayer.getHeight(), 5);
         LevelLoader loader = new FileLevelLoader("level.txt");
         LevelLayout layout = loader.load();
+
+        Set<GridPoint2> occupied = new HashSet<>();
+
         addPlayer(layout.getPlayerPosition(), groundLayer);
+        occupied.add(layout.getPlayerPosition());
+
         for (GridPoint2 treePosition : layout.getTreePositions()) {
             addTree(treePosition, groundLayer);
+            occupied.add(treePosition);
+        }
+
+        LayoutGeneration positions = new LayoutGeneration(groundLayer.getWidth(), groundLayer.getHeight());
+        for (GridPoint2 playerPosition : positions.pick(AI_PLAYER_COUNT, occupied)) {
+            addAiPlayer(playerPosition, groundLayer);
         }
 
         initInputManager();
@@ -79,6 +96,12 @@ public class GameDesktopLauncher implements ApplicationListener {
         game.addPlayer(player);
     }
 
+    private void addAiPlayer(GridPoint2 position, TiledMapTileLayer groundLayer) {
+        Player player = new Player(position);
+        scene.add(new PlayerSprite(player, groundLayer, TANK_TEXTURE));
+        game.addAiPlayer(player, new RandomMovementStrategy());
+    }
+
     private void addTree(GridPoint2 position, TiledMapTileLayer groundLayer) {
         Tree tree = new Tree(position);
         scene.add(new TreeSprite(tree, groundLayer, TREE_TEXTURE));
@@ -86,15 +109,16 @@ public class GameDesktopLauncher implements ApplicationListener {
     }
 
     private void initInputManager() {
+        Player player = game.getPlayer();
         inputManager = new InputManager(Gdx.input::isKeyPressed);
-        inputManager.register(UP, () -> game.movePlayer(Direction.UP));
-        inputManager.register(W, () -> game.movePlayer(Direction.UP));
-        inputManager.register(LEFT, () -> game.movePlayer(Direction.LEFT));
-        inputManager.register(A, () -> game.movePlayer(Direction.LEFT));
-        inputManager.register(DOWN, () -> game.movePlayer(Direction.DOWN));
-        inputManager.register(S, () -> game.movePlayer(Direction.DOWN));
-        inputManager.register(RIGHT, () -> game.movePlayer(Direction.RIGHT));
-        inputManager.register(D, () -> game.movePlayer(Direction.RIGHT));
+        inputManager.register(UP, new MoveCommand(player, Direction.UP, game));
+        inputManager.register(W, new MoveCommand(player, Direction.UP, game));
+        inputManager.register(LEFT, new MoveCommand(player, Direction.LEFT, game));
+        inputManager.register(A, new MoveCommand(player, Direction.LEFT, game));
+        inputManager.register(DOWN, new MoveCommand(player, Direction.DOWN, game));
+        inputManager.register(S, new MoveCommand(player, Direction.DOWN, game));
+        inputManager.register(RIGHT, new MoveCommand(player, Direction.RIGHT, game));
+        inputManager.register(D, new MoveCommand(player, Direction.RIGHT, game));
     }
 
     @Override
