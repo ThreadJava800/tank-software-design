@@ -8,11 +8,16 @@ import ru.mipt.bit.platformer.model.Game;
 import ru.mipt.bit.platformer.model.Obstacle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PlayerTest {
 
+    private static final int WIDTH = 10;
+    private static final int HEIGHT = 8;
+
     private Game gameWith(Player player, Obstacle... obstacles) {
-        Game game = new Game();
+        Game game = new Game(WIDTH, HEIGHT);
         game.addPlayer(player);
         for (Obstacle obstacle : obstacles) {
             game.addObstacle(obstacle);
