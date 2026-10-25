@@ -12,6 +12,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 
+import ru.mipt.bit.platformer.level.FileLevelLoader;
+import ru.mipt.bit.platformer.level.LevelLayout;
+import ru.mipt.bit.platformer.level.LevelLoader;
+import ru.mipt.bit.platformer.level.RandomLevelLoader;
 import ru.mipt.bit.platformer.manager.InputManager;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Game;
@@ -34,8 +38,6 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
-    private static final GridPoint2 PLAYER_POS = new GridPoint2(1, 1);
-    private static final GridPoint2 TREE_POS = new GridPoint2(1, 3);
     private static final String TANK_TEXTURE = "images/tank_blue.png";
     private static final String TREE_TEXTURE = "images/greenTree.png";
 
@@ -60,8 +62,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         scene = new Scene();
         game = new Game();
 
-        addPlayer(PLAYER_POS, groundLayer);
-        addTree(TREE_POS, groundLayer);
+        // LevelLoader loader = new RandomLevelLoader(groundLayer.getWidth(), groundLayer.getHeight(), 5);
+        LevelLoader loader = new FileLevelLoader("level.txt");
+        LevelLayout layout = loader.load();
+        addPlayer(layout.getPlayerPosition(), groundLayer);
+        for (GridPoint2 treePosition : layout.getTreePositions()) {
+            addTree(treePosition, groundLayer);
+        }
 
         initInputManager();
     }
