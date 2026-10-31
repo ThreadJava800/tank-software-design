@@ -13,6 +13,10 @@ public class Scene {
         this.objects.add(renderable);
     }
 
+    public void remove(Renderable renderable) {
+        this.objects.remove(renderable);
+    }
+
     public void render(Batch batch) {
         batch.begin();
         for (Renderable renderable : this.objects) {
