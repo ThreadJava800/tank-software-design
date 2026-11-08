@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.ai.RandomMovementStrategy;
 import ru.mipt.bit.platformer.command.MoveCommand;
 import ru.mipt.bit.platformer.command.ShootCommand;
+import ru.mipt.bit.platformer.command.ToggleHealthBarCommand;
 import ru.mipt.bit.platformer.level.FileLevelLoader;
 import ru.mipt.bit.platformer.level.LevelLayout;
 import ru.mipt.bit.platformer.level.LevelLoader;
@@ -29,10 +30,12 @@ import ru.mipt.bit.platformer.model.entity.Player;
 import ru.mipt.bit.platformer.model.entity.Tree;
 import ru.mipt.bit.platformer.view.Scene;
 import ru.mipt.bit.platformer.view.SceneListener;
+import ru.mipt.bit.platformer.view.ToggleGroup;
 
 import static com.badlogic.gdx.Input.Keys.A;
 import static com.badlogic.gdx.Input.Keys.D;
 import static com.badlogic.gdx.Input.Keys.DOWN;
+import static com.badlogic.gdx.Input.Keys.L;
 import static com.badlogic.gdx.Input.Keys.LEFT;
 import static com.badlogic.gdx.Input.Keys.RIGHT;
 import static com.badlogic.gdx.Input.Keys.S;
@@ -54,6 +57,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Game game;
     private Scene scene;
     private InputManager inputManager;
+    private InputManager toggleInputManager;
 
     @Override
     public void create() {
@@ -66,7 +70,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         scene = new Scene();
         game = new Game(groundLayer.getWidth(), groundLayer.getHeight());
-        game.addListener(new SceneListener(scene, groundLayer));
+        ToggleGroup healthBars = new ToggleGroup();
+        game.addListener(new SceneListener(scene, groundLayer, healthBars));
 
         // LevelLoader loader = new RandomLevelLoader(groundLayer.getWidth(), groundLayer.getHeight(), 5);
         LevelLoader loader = new FileLevelLoader("level.txt");
@@ -87,10 +92,10 @@ public class GameDesktopLauncher implements ApplicationListener {
             game.addAiPlayer(new Player(playerPosition), new RandomMovementStrategy());
         }
 
-        initInputManager();
+        initInputManager(healthBars);
     }
 
-    private void initInputManager() {
+    private void initInputManager(ToggleGroup healthBars) {
         Player player = game.getPlayer();
         inputManager = new InputManager(Gdx.input::isKeyPressed);
         inputManager.register(UP, new MoveCommand(player, Direction.UP, game));
@@ -102,6 +107,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         inputManager.register(RIGHT, new MoveCommand(player, Direction.RIGHT, game));
         inputManager.register(D, new MoveCommand(player, Direction.RIGHT, game));
         inputManager.register(SPACE, new ShootCommand(player, game));
+
+        toggleInputManager = new InputManager(Gdx.input::isKeyJustPressed);
+        toggleInputManager.register(L, new ToggleHealthBarCommand(healthBars));
     }
 
     @Override
@@ -111,6 +119,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         inputManager.handleInput();
+        toggleInputManager.handleInput();
         game.update(Gdx.graphics.getDeltaTime());
 
         // render each tile of the level
