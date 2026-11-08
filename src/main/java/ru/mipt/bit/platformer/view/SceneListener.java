@@ -21,11 +21,13 @@ public class SceneListener implements LevelListener {
 
     private final Scene scene;
     private final TiledMapTileLayer groundLayer;
+    private final ToggleGroup healthBars;
     private final Map<Object, Renderable> sprites = new HashMap<>();
 
-    public SceneListener(Scene scene, TiledMapTileLayer groundLayer) {
+    public SceneListener(Scene scene, TiledMapTileLayer groundLayer, ToggleGroup healthBars) {
         this.scene = scene;
         this.groundLayer = groundLayer;
+        this.healthBars = healthBars;
     }
 
     @Override
@@ -38,13 +40,17 @@ public class SceneListener implements LevelListener {
     @Override
     public void onRemoved(Object object) {
         Renderable sprite = this.sprites.remove(object);
+        this.healthBars.remove(object);
         this.scene.remove(sprite);
         sprite.dispose();
     }
 
     private Renderable createSprite(Object object) {
         if (object instanceof Player) {
-            return new PlayerSprite((Player) object, this.groundLayer, TANK_TEXTURE);
+            Player player = (Player) object;
+            ToggleableRenderable healthBar = new ToggleableRenderable(new HealthBar(player, this.groundLayer));
+            this.healthBars.add(player, healthBar);
+            return new HealthBarDecorator(new PlayerSprite(player, this.groundLayer, TANK_TEXTURE), healthBar);
         }
         if (object instanceof Tree) {
             return new TreeSprite((Tree) object, this.groundLayer, TREE_TEXTURE);

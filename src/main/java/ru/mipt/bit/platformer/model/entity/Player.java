@@ -86,6 +86,10 @@ public class Player {
         return this.nextPos;
     }
 
+    public float getHealthRatio() {
+        return Math.max(0, this.health) / (float) HEALTH;
+    }
+
     public float getRotation() {
         return this.rotation;
     }
