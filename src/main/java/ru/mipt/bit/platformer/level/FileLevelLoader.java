@@ -10,6 +10,9 @@ import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+/**
+ * Layer: Infrastructure. Role: Output Adapter.
+ */
 public class FileLevelLoader implements LevelLoader {
 
     private static final char TREE_SYM = 'T';

@@ -8,6 +8,9 @@ import ru.mipt.bit.platformer.model.Game;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
+/**
+ * Layer: Domain. Role: Entity.
+ */
 public class Bullet {
 
     private static final float MOVEMENT_SPEED = 0.1f;

@@ -6,6 +6,9 @@ import java.util.Set;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class RandomLevelLoader implements LevelLoader {
 
     private final int width;

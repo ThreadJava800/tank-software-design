@@ -11,6 +11,9 @@ import ru.mipt.bit.platformer.ai.MovementStrategy;
 import ru.mipt.bit.platformer.model.entity.Bullet;
 import ru.mipt.bit.platformer.model.entity.Player;
 
+/**
+ * Layer: Application. Role: Use Case.
+ */
 public class Game {
 
     private final int width;

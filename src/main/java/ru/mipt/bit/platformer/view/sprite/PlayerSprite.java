@@ -14,6 +14,9 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class PlayerSprite implements Renderable {
 
     private final Player player;
