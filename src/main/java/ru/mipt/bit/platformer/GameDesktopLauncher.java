@@ -45,6 +45,9 @@ import static com.badlogic.gdx.Input.Keys.W;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
+/**
+ * Layer: Infrastructure. Role: Composition Root.
+ */
 public class GameDesktopLauncher implements ApplicationListener {
 
     private static final int AI_PLAYER_COUNT = 3;

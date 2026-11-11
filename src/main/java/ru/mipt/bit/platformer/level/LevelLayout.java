@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+/**
+ * Layer: Application. Role: DTO.
+ */
 public class LevelLayout {
 
     private final GridPoint2 playerPosition;

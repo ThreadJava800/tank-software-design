@@ -3,6 +3,9 @@ package ru.mipt.bit.platformer.view;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class ToggleGroup implements Toggleable {
 
     private final Map<Object, Toggleable> toggleables = new LinkedHashMap<>();

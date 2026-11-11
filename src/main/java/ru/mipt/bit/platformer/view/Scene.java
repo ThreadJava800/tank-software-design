@@ -5,6 +5,9 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class Scene {
 
     private final List<Renderable> objects = new ArrayList<>();

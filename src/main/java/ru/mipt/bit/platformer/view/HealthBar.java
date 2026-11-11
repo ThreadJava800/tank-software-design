@@ -11,6 +11,9 @@ import com.badlogic.gdx.math.Rectangle;
 import ru.mipt.bit.platformer.model.entity.Player;
 import ru.mipt.bit.platformer.util.TileMovement;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class HealthBar implements Renderable {
 
     private static final float BAR_HEIGHT = 12f;

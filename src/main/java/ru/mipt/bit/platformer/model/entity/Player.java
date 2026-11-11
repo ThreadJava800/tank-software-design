@@ -4,16 +4,21 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Game;
+import ru.mipt.bit.platformer.model.state.LightState;
+import ru.mipt.bit.platformer.model.state.TankState;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
+/**
+ * Layer: Domain. Role: Entity.
+ */
 public class Player {
 
     private static final float MOVEMENT_SPEED = 0.4f;
     private static final float RELOAD_TIME = 0.5f;
     private static final int HEALTH = 100;
-    private static final int BULLET_DAMAGE = 25;
+    private static final int BULLET_DAMAGE = 10;
 
     private final GridPoint2 currPos, nextPos;
     private float rotation;
@@ -21,6 +26,7 @@ public class Player {
     private Direction direction;
     private float reload;
     private int health;
+    private TankState state = new LightState();
 
     public Player(GridPoint2 pos) {
         this.currPos = new GridPoint2(pos);
@@ -49,7 +55,7 @@ public class Player {
     }
 
     public void shoot(Game game) {
-        if (!this.isAlive() || this.reload > 0f) {
+        if (!this.isAlive() || !this.state.canShoot() || this.reload > 0f) {
             return;
         }
 
@@ -60,6 +66,11 @@ public class Player {
 
     public void takeDamage(int damage) {
         this.health -= damage;
+        this.state.onHealthChanged(this);
+    }
+
+    public void setState(TankState state) {
+        this.state = state;
     }
 
     public boolean isAlive() {
@@ -67,7 +78,7 @@ public class Player {
     }
 
     public void update(float deltaTime) {
-        this.progress = continueProgress(this.progress, deltaTime, MOVEMENT_SPEED);
+        this.progress = continueProgress(this.progress, deltaTime * this.state.movementSpeedMultiplier(), MOVEMENT_SPEED);
         if (this.finishedMoving()) {
             this.currPos.set(this.nextPos);
         }

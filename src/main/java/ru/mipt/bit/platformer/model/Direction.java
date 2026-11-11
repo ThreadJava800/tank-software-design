@@ -1,5 +1,8 @@
 package ru.mipt.bit.platformer.model;
 
+/**
+ * Layer: Domain. Role: Value Object.
+ */
 public enum Direction {
     UP(0, 1, 90f),
     LEFT(-1, 0, -180f),

@@ -5,6 +5,9 @@ import java.util.Map;
 
 import ru.mipt.bit.platformer.command.Runnable;
 
+/**
+ * Layer: Interface Adapter. Role: Input Adapter.
+ */
 public class InputManager {
 
     private final KeyChecker keyChecker;

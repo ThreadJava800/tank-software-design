@@ -13,6 +13,9 @@ import ru.mipt.bit.platformer.view.sprite.BulletSprite;
 import ru.mipt.bit.platformer.view.sprite.PlayerSprite;
 import ru.mipt.bit.platformer.view.sprite.TreeSprite;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class SceneListener implements LevelListener {
 
     private static final String TANK_TEXTURE = "images/tank_blue.png";

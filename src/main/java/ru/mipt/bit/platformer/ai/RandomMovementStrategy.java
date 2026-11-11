@@ -9,6 +9,9 @@ import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Game;
 import ru.mipt.bit.platformer.model.entity.Player;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class RandomMovementStrategy implements MovementStrategy {
 
     private static final int SHOOT_CHANCE = 100;

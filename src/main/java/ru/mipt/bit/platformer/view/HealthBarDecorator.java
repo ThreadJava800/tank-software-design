@@ -2,6 +2,9 @@ package ru.mipt.bit.platformer.view;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * Layer: Interface Adapter. Role: Output Adapter.
+ */
 public class HealthBarDecorator implements Renderable {
 
     private final Renderable component;

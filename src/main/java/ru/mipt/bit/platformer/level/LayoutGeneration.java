@@ -7,6 +7,9 @@ import java.util.Set;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+/**
+ * Layer: Application. Role: Utility.
+ */
 public class LayoutGeneration {
 
     private final int width;

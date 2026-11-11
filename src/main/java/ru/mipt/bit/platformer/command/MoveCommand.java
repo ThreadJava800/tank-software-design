@@ -4,6 +4,9 @@ import ru.mipt.bit.platformer.model.Game;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.entity.Player;
 
+/**
+ * Layer: Application. Role: Use Case.
+ */
 public class MoveCommand implements Runnable {
 
     private final Player player;

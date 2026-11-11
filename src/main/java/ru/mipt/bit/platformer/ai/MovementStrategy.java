@@ -4,6 +4,9 @@ import ru.mipt.bit.platformer.command.Runnable;
 import ru.mipt.bit.platformer.model.Game;
 import ru.mipt.bit.platformer.model.entity.Player;
 
+/**
+ * Layer: Application. Role: Output Port.
+ */
 public interface MovementStrategy {
     Runnable nextCommand(Player player, Game game);
 }
